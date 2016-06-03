@@ -3,7 +3,12 @@
  * https://developers.google.com/apps-script/service_spreadsheet
  */
 
-var fbURL = 'https://www.facebook.com/groups/541841935909841/';
+String.prototype.capitalize = function() {
+  return this.replace(/(?:^|\s)\S/g, function(a) {
+    return a.toUpperCase();
+  });
+};
+
 var maestroCzarEmail = 'Marc Majcher <majcher@gmail.com>';
 
 var maestroData = {
@@ -105,7 +110,7 @@ function generateCastingMessage(data) {
     message +=
       '4. Dropping out of Maestro after getting cast results in a one month no-play penalty\n';
   }
-  showMessage('Maestro' + data.showType + 'Casting Notice', message, fbURL);
+  showMessage('Maestro' + data.showType + 'Casting Notice', message);
 }
 
 /**
@@ -131,8 +136,6 @@ function generateCastMessage(data) {
   var director2 = range.getCell(18, data.colNum).getValue();
   var musician = range.getCell(15, data.colNum).getValue();
   var tech = range.getCell(14, data.colNum).getValue();
-  var postURL = range.getCell(20, data.colNum).getValue();
-
 
   // Bail if it's not a casting sheet
   if (range.getCell(1, 1).getValue() !== 'Maestro Cast') {
@@ -166,65 +169,7 @@ function generateCastMessage(data) {
 
   message += '\nCall time is ' + data.callTime +
     ' - come on down and ready to warm up!'
-  showMessage('Maestro ' + data.showType + ' Cast Notice', message, postURL);
-}
-
-/**
- * Add sheet to spreadsheet for new week of Maestro casting
- */
-function addNewWeek() {
-  var sheetDate = SpreadsheetApp.getActiveSheet().getName();
-  var dateArray = sheetDate.split('/');
-  var month = Number(dateArray[0]) - 1;
-  var day = dateArray[1];
-  var year = dateArray[2];
-  var date = new Date(year, month, day);
-  date.setDate(date.getDate() + 7);
-  var dateString = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
-
-  // duplicate sheet and rename
-  SpreadsheetApp.getActiveSpreadsheet().duplicateActiveSheet();
-  var sheet = SpreadsheetApp.getActiveSheet();
-  sheet.setName(dateString);
-  SpreadsheetApp.getActiveSpreadsheet().moveActiveSheet(3);
-
-  // clear Maestro players
-  var players = sheet.getRange('B1:B12').sort(2);
-  players.moveTo(sheet.getRange('B50'));
-  var signups = sheet.getRange('D1:D49').sort(4);
-  signups.moveTo(sheet.getRange('D50'));
-  var tech = sheet.getRange('B14');
-  tech.moveTo(sheet.getRange('B1'));
-  sheet.getRange('B15:B21').clear();
-
-  // clear RAW players
-  var players = sheet.getRange('G1:G12').sort(7);
-  players.moveTo(sheet.getRange('G50'));
-  var signups = sheet.getRange('I1:I49').sort(9);
-  signups.moveTo(sheet.getRange('I50'));
-  var tech = sheet.getRange('G14');
-  tech.moveTo(sheet.getRange('G1'));
-  sheet.getRange('G15:G21').clear();
-
-  // grab this week's directors
-  var schedule = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(
-    'Schedule').getDataRange().getValues();
-  for (var i = 1; i < schedule.length; i++) {
-    var thisDate = new Date(schedule[i][0]);
-    var thisDateString = (thisDate.getMonth() + 1) + '/' + thisDate.getDate() +
-      '/' + thisDate.getFullYear();
-    if (thisDateString.match(dateString)) {
-      sheet.getRange('B17').setValue(schedule[i][1]);
-      sheet.getRange('B18').setValue(schedule[i][2]);
-      sheet.getRange('G17').setValue(schedule[i][5]);
-      sheet.getRange('G18').setValue(schedule[i][6]);
-      sheet.getRange('B15').setValue(schedule[i][3]);
-      sheet.getRange('G15').setValue(schedule[i][7]);
-      break;
-    }
-  }
-
-  SpreadsheetApp.setActiveSheet(sheet);
+  showMessage('Maestro ' + data.showType + ' Cast Notice', message);
 }
 
 /**
@@ -315,9 +260,115 @@ function getFirstName(fullName) {
 }
 
 /**
+ * Add sheet to spreadsheet for new week of Maestro casting
+ */
+function addNewWeek() {
+  var sheetDate = SpreadsheetApp.getActiveSheet().getName();
+  var dateArray = sheetDate.split('/');
+  var month = Number(dateArray[0]) - 1;
+  var day = dateArray[1];
+  var year = dateArray[2];
+  var date = new Date(year, month, day);
+  date.setDate(date.getDate() + 7);
+  var dateString = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
+
+  // duplicate sheet and rename
+  SpreadsheetApp.getActiveSpreadsheet().duplicateActiveSheet();
+  var sheet = SpreadsheetApp.getActiveSheet();
+  sheet.setName(dateString);
+  SpreadsheetApp.getActiveSpreadsheet().moveActiveSheet(3);
+
+  // clear Maestro players
+  var players = sheet.getRange('B1:B12').sort(2);
+  players.moveTo(sheet.getRange('B50'));
+  var signups = sheet.getRange('D1:D49').sort(4);
+  signups.moveTo(sheet.getRange('D50'));
+  var tech = sheet.getRange('B14');
+  tech.moveTo(sheet.getRange('B1'));
+  sheet.getRange('B15:B21').clear();
+
+  // clear RAW players
+  var players = sheet.getRange('G1:G12').sort(7);
+  players.moveTo(sheet.getRange('G50'));
+  var signups = sheet.getRange('I1:I49').sort(9);
+  signups.moveTo(sheet.getRange('I50'));
+  var tech = sheet.getRange('G14');
+  tech.moveTo(sheet.getRange('G1'));
+  sheet.getRange('G15:G21').clear();
+
+  // grab this week's directors
+  var schedule = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(
+    'Schedule').getDataRange().getValues();
+  for (var i = 1; i < schedule.length; i++) {
+    var thisDate = new Date(schedule[i][0]);
+    var thisDateString = (thisDate.getMonth() + 1) + '/' + thisDate.getDate() +
+      '/' + thisDate.getFullYear();
+    if (thisDateString.match(dateString)) {
+      sheet.getRange('B17').setValue(schedule[i][1]);
+      sheet.getRange('B18').setValue(schedule[i][2]);
+      sheet.getRange('G17').setValue(schedule[i][5]);
+      sheet.getRange('G18').setValue(schedule[i][6]);
+      sheet.getRange('B15').setValue(schedule[i][3]);
+      sheet.getRange('G15').setValue(schedule[i][7]);
+      break;
+    }
+  }
+
+  SpreadsheetApp.setActiveSheet(sheet);
+}
+
+/**
+ * Run analytics on previous maestro casting
+ */
+function getMaestroStats() {
+  var numWeeks = 24;
+  var playerList = {};
+  var signupList = {};
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  for (var i = 2; i < 2 + numWeeks; i++) {
+    var sheet = SpreadsheetApp.setActiveSheet(ss.getSheets()[i]);
+
+    sheet.getRange('B50:B100').getValues().forEach(function(name, i) {
+      name = name.toString().trim().capitalize();
+      if (name !== '') {
+        if (playerList[name] !== undefined) {
+          playerList[name]++;
+        }
+        else {
+          playerList[name] = 1;
+        }
+      }
+    });
+
+    sheet.getRange('D50:D100').getValues().forEach(function(name, i) {
+      name = name.toString().trim().capitalize();
+      if (name !== '') {
+        if (signupList[name] !== undefined) {
+          signupList[name]++;
+        }
+        else {
+          signupList[name] = 1;
+        }
+      }
+    });
+  }
+
+  var ratios = Object.keys(signupList).sort().map(function(k) {
+    if (playerList[k] === undefined) {
+      playerList[k] = 0;
+    }
+    return k + ': (' + playerList[k] + '/' + signupList[k] + ')';
+  });
+  showMessage("Stats", 'In last ' + numWeeks + ' weeks:\n\n' + ratios.join('\n'));
+
+  SpreadsheetApp.setActiveSheet(ss.getSheets()[2]);
+}
+
+/**
  * Display message in text box with link
  */
-function showMessage(title, message, url) {
+function showMessage(title, message) {
   SpreadsheetApp.getUi().alert(message);
 }
 
@@ -337,5 +388,6 @@ function onOpen() {
     .addItem('Send Maestro RAW Reminder Email', 'maestroRawReminderEmail')
     .addSeparator()
     .addItem('Create New Week', 'addNewWeek')
+    .addItem('Get Maestro Stats', 'getMaestroStats')
     .addToUi();
 }
