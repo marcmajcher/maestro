@@ -88,7 +88,7 @@ function generateCastingMessage(data) {
     message = 'Hello everyone!\n';
     message += '10pm Maestro - ' + showDate + '\n\n';
     message +=
-      'Maestro is the Hideout\'s Saturday 10 pm!It features games and scenes and nail - biting eliminations!\n\ n ';
+      'Maestro is the Hideout\'s Saturday 10 pm! It features games and scenes and nail - biting eliminations!\n\n ';
     message += 'Directors: ' + director1 + ' and ' + director2 + '!\n';
     message += 'Music: ' + musician + '!\n\n';
     message +=
