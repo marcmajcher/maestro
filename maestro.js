@@ -88,13 +88,13 @@ function generateCastingMessage(data) {
     message = 'Hello everyone!\n';
     message += '10pm Maestro - ' + showDate + '\n\n';
     message +=
-      'Maestro is the Hideout\'s Saturday 10 pm! It features games and scenes and nail - biting eliminations!\n\n ';
+      'Maestro is the Hideout\'s Saturday 10 pm! It features games and scenes and nail-biting eliminations!\n\n';
     message += 'Directors: ' + director1 + ' and ' + director2 + '!\n';
     message += 'Music: ' + musician + '!\n\n';
     message +=
       'Sign up via the Google Form below with your NAME, your EXPERIENCE LEVEL, and your FAVORITE WARMUP.\n\n';
     message +=
-      '(You\'ll only be cast for tech if you volunteer to do tech.Also, if you tech, you \'re automatically cast in the next show!)\n\n';
+      '(You\'ll only be cast for tech if you volunteer to do tech. Also, if you tech, you\'re automatically cast in the next show!)\n\n';
     message += 'v v v v v SIGN UP HERE! v v v v v\n';
     message += signup + '\n';
     message += '^ ^ ^ ^ ^ SIGN UP HERE! ^ ^ ^ ^ ^\n\n'
@@ -108,7 +108,7 @@ function generateCastingMessage(data) {
     message +=
       '3. Staying for notes is required. We are working hard for Maestro to get out by 11:45 and for notes to last no longer than 15 minutes. Feel free to drink your free beer and watch the show if eliminated!\n';
     message +=
-      '4. Dropping out of Maestro after getting cast results in a one month no-play penalty\n';
+      '4. Dropping out of Maestro after getting cast results in a one month no-play penalty.\n';
   }
   showMessage('Maestro' + data.showType + 'Casting Notice', message);
 }
@@ -263,6 +263,14 @@ function getFirstName(fullName) {
  * Add sheet to spreadsheet for new week of Maestro casting
  */
 function addNewWeek() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = ss.getSheets();
+
+  // delete the oldest sheet to make room
+  SpreadsheetApp.setActiveSheet(sheets[sheets.length - 1]);
+  ss.deleteActiveSheet();
+  SpreadsheetApp.setActiveSheet(sheets[2]);
+
   var sheetDate = SpreadsheetApp.getActiveSheet().getName();
   var dateArray = sheetDate.split('/');
   var month = Number(dateArray[0]) - 1;
@@ -360,9 +368,9 @@ function getMaestroStats() {
     }
     return k + ': (' + playerList[k] + '/' + signupList[k] + ')';
   });
-  showMessage("Stats", 'In last ' + numWeeks + ' weeks:\n\n' + ratios.join('\n'));
 
   SpreadsheetApp.setActiveSheet(ss.getSheets()[2]);
+  showMessage("Stats", 'In last ' + numWeeks + ' weeks:\n\n' + ratios.join('\n'));
 }
 
 /**
