@@ -226,7 +226,7 @@ function sendReminderEmail(data) {
   message += getFirstName(director1) + ', ' + getFirstName(director2) +
     ', call is at ' + data.callTime +
     ' - take a look at what people like for warmups, and make sure they get into them!\n\n' +
-    sheet.getRange('G23').getValue() + '\n\nYour cast:\n\n';
+    sheet.getRange(data.col + '23').getValue() + '\n\nYour cast:\n\n';
   message += 'Tech: ' + sheet.getRange('G14').getValue() + '\n\nPlayers:\n';
 
   var players = sheet.getRange(data.col + '1:' + data.col + '12')
@@ -267,8 +267,8 @@ function addNewWeek() {
   var sheets = ss.getSheets();
 
   // delete the oldest sheet to make room
-  SpreadsheetApp.setActiveSheet(sheets[sheets.length - 1]);
-  ss.deleteActiveSheet();
+  //SpreadsheetApp.setActiveSheet(sheets[sheets.length-1]);
+  //ss.deleteActiveSheet();
   SpreadsheetApp.setActiveSheet(sheets[2]);
 
   var sheetDate = SpreadsheetApp.getActiveSheet().getName();
