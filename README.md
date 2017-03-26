@@ -9,3 +9,7 @@ These are some handy (/hacky) Google Sheets scripts to help with the Maestro cas
 * Send Maestro reminder email
 * Send Maestro RAW reminder email
 * Create new week
+
+TODO:
+
+* create director signup email and Send
